@@ -1,0 +1,7 @@
+- id: octal8
+  name: octal8
+  description: convert base-10 ints to base-8
+  entry: octal8
+  language: python
+  language_version: python3
+  types: [python]

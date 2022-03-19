@@ -1,0 +1,3 @@
+pytest
+tokenize-rt
+tox
