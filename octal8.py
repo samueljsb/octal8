@@ -21,7 +21,6 @@ def _rewrite_file(filename: str) -> int:
     found: set[Offset] = set()
     tree = ast.parse(contents, filename=filename)
     for node in ast.walk(tree):
-        print(node)
         if (
             isinstance(node, ast.Constant)  # py3.8+
             and isinstance(node.value, int)
@@ -29,8 +28,6 @@ def _rewrite_file(filename: str) -> int:
             and isinstance(node.n, int)
         ):
             found.add(Offset(node.lineno, node.col_offset))
-
-    print(found)
 
     tokens = src_to_tokens(contents)
     for i, token in reversed_enumerate(tokens):
