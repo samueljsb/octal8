@@ -31,7 +31,7 @@ Sample `.pre-commit-config.yaml`:
 
 ```yaml
 - repo: https://github.com/samueljsb/octal8
-  rev: "1.1.0"
+  rev: "v1.1.0"
   hooks:
     - id: octal8
 ```
