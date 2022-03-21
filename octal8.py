@@ -24,8 +24,10 @@ def _rewrite_file(filename: str) -> int:
         if (
             isinstance(node, ast.Constant)  # py3.8+
             and isinstance(node.value, int)
+            and not isinstance(node.value, bool)
             or isinstance(node, ast.Num)  # py3.7
             and isinstance(node.n, int)
+            and not isinstance(node.n, bool)
         ):
             found.add(Offset(node.lineno, node.col_offset))
 
@@ -65,6 +67,7 @@ def test_main(tmp_path: Path) -> None:
 from typing import Literal
 
 CONSTANT = 1234
+my_bool = True
 
 
 def foo(default=12) -> Literal[6]:
@@ -88,6 +91,7 @@ EIGHT = 0o10
 from typing import Literal
 
 CONSTANT = 0o2322
+my_bool = True
 
 
 def foo(default=0o14) -> Literal[0o6]:
