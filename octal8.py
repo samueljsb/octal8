@@ -1,11 +1,9 @@
 from __future__ import annotations
 
 import argparse
-import ast
 from typing import TYPE_CHECKING
 from typing import Sequence
 
-from tokenize_rt import Offset
 from tokenize_rt import reversed_enumerate
 from tokenize_rt import src_to_tokens
 from tokenize_rt import tokens_to_src
@@ -18,24 +16,13 @@ def _rewrite_file(filename: str) -> int:
     with open(filename, encoding="utf-8") as f:
         contents = f.read()
 
-    found: set[Offset] = set()
-    tree = ast.parse(contents, filename=filename)
-    for node in ast.walk(tree):
-        if (
-            isinstance(node, ast.Constant)  # py3.8+
-            and isinstance(node.value, int)
-            and not isinstance(node.value, bool)
-            or isinstance(node, ast.Num)  # py3.7
-            and isinstance(node.n, int)
-            and not isinstance(node.n, bool)
-        ):
-            found.add(Offset(node.lineno, node.col_offset))
-
     tokens = src_to_tokens(contents)
     for i, token in reversed_enumerate(tokens):
-        if token.offset in found:
-            if not token.src.startswith("0"):  # base-10 int
+        if token.name == "NUMBER":
+            try:
                 tokens[i] = token._replace(src=oct(int(token.src)))
+            except ValueError:  # already not base-10
+                pass
 
     new_contents = tokens_to_src(tokens)
     with open(filename, "w") as f:
